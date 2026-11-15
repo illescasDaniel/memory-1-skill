@@ -80,11 +80,33 @@ Settings screen: moving the in-app help pages to the native WebView.
 - Keep it small, section by section: `Updated` names one session; `Doing` is the current work only (up to 5 lines);
   `Done recently` has at most 5 one-line items from the latest sessions (delete older ones: git and the notes keep
   them); `Next` has at most 7 items; no other sections.
-- Open items that are not among the next steps go to `memory/LATER.md`, one dated line each, marked `(User)` or
-  `(Mine)`: things to test on a real device, questions the user has not answered, follow-ups from older sessions.
-  `LATER.md` is not read at session start. Read it when the user asks what is pending, or when `Next` is empty, and
-  delete lines that are done or no longer matter.
-- When a decision changes, update both: supersede the note and rewrite the affected `Next` items.
+- Open items that are not among the next steps go to `memory/LATER.md` (see below), not into extra sections here.
+
+## LATER.md: open items that are not next
+
+A short backlog (at most 40 lines), not read at session start. Read it when the user asks what is pending, when `Next`
+is empty, and grep it for the subject before starting work on that subject.
+
+```markdown
+# Later
+## Releases
+- 2026-11-12 (User) Decide whether Linux arm64 gets a build.
+## Help pages
+- 2026-11-15 (Mine) Test on a real device: FAQ grid on Ubuntu 20.04, search box on Android 9, dark mode.
+```
+
+- **What goes in:** something a person would actually act on later: a decision the user still owes, a test only the
+  user can run, a real follow-up. A caveat about finished work ("not tried on a real phone") belongs in that work's
+  note, not here. Do not add "check that X finished" items for routine steps.
+- **One line per subject and owner.** Group lines under subject headings. Before adding, look for a line on the same
+  subject and extend it (as the device-test line above does) instead of adding another. Each line has a date and
+  `(User)` or `(Mine)`; when you extend a line, keep its oldest date.
+- **Delete, do not keep:** lines that are done, and lines overtaken by events (a check on release 1.2 once 1.4 is out;
+  a question about code that was since rewritten). Git keeps the history.
+- **When it passes 40 lines, prune in this order:** delete done and overtaken lines; merge lines on the same subject;
+  delete the oldest `(Mine)` lines. Never silently delete a `(User)` line that is still open: if `(User)` lines alone
+  exceed the limit, or some are older than 30 days, list them to the user at the next natural pause and ask which to
+  keep, then delete the rest. If the user is not there, put that question first in `NOW.md` under Open questions.
 
 ## How to write a note
 
@@ -200,14 +222,14 @@ Before finishing a session in which work happened (when the user says thanks, st
 rewrite `NOW.md`, write or supersede the notes, update `MEMORY.md` and any affected topic page, and, if the archive
 is used, export the session and add its `INDEX.md` line. Keep edits small; do not rewrite notes that did not change.
 
-Then run the check and do what each `FIX` line says (it reports a `NOW.md` or index that grew past its limit, notes
+Then run the check and do what each `FIX` line says (it reports a `NOW.md`, `LATER.md` or index that grew past its limit, notes
 missing from the index, and broken supersession links):
 
 ```bash
 python3 <skill dir>/scripts/memory_check.py --memory memory
 ```
 
-Without a shell, count instead: `NOW.md` at most 50 lines, `MEMORY.md` at most 150.
+Without a shell, count instead: `NOW.md` at most 50 lines, `LATER.md` at most 40, `MEMORY.md` at most 150.
 
 ## Alongside other memory
 

@@ -5,11 +5,12 @@ usage: memory_check.py [--memory DIR]      DIR defaults to ./memory
 Prints one line per problem, each with the action to take; exits 1 if there is any.
 """
 import argparse
+import datetime
 import re
 import sys
 from pathlib import Path
 
-NOW_MAX, NEXT_MAX, DONE_MAX, INDEX_MAX, TOPIC_NOTES = 50, 7, 5, 150, 8
+NOW_MAX, NEXT_MAX, DONE_MAX, INDEX_MAX, LATER_MAX, LATER_DAYS = 50, 7, 5, 150, 40, 30
 
 
 def meta(path):
@@ -46,6 +47,28 @@ def main():
             out.append(f"NOW.md has extra sections ({', '.join(extra)}): move their open items to LATER.md")
     else:
         out.append("NOW.md is missing: create it from the template")
+    later = mem / "LATER.md"
+    if later.exists():
+        ltext = later.read_text(encoding="utf-8", errors="replace")
+        rows = [l for l in ltext.splitlines() if re.match(r"\s*[-*]\s", l)]
+        n = len(ltext.splitlines())
+        if n > LATER_MAX:
+            mine = sum("(Mine)" in l for l in rows)
+            out.append(f"LATER.md has {n} lines (limit {LATER_MAX}; {mine} Mine, {len(rows) - mine} other): delete done "
+                       f"and overtaken lines, merge lines on the same subject, then delete the oldest (Mine) lines; "
+                       f"ask the user about (User) lines you cannot settle")
+        ref = re.search(r"Updated:\s*(\d{4}-\d{2}-\d{2})", now.read_text(encoding="utf-8", errors="replace")) if now.exists() else None
+        today = datetime.date.fromisoformat(ref.group(1)) if ref else datetime.date.today()
+        old = []
+        for l in rows:
+            d = re.search(r"\d{4}-\d{2}-\d{2}", l)
+            if d and "(User)" in l and (today - datetime.date.fromisoformat(d.group(0))).days > LATER_DAYS:
+                old.append(l)
+        if old:
+            out.append(f"LATER.md has {len(old)} (User) line(s) older than {LATER_DAYS} days: list them to the user and "
+                       f"ask which to keep (first: {old[0].strip()[:80]})")
+        if rows and not re.search(r"(?m)^## ", ltext) and len(rows) > 10:
+            out.append("LATER.md has no subject headings: group its lines under '## <subject>' and merge lines on the same subject")
     index = mem / "MEMORY.md"
     itext = index.read_text(encoding="utf-8", errors="replace") if index.exists() else ""
     topics = sorted((mem / "topics").glob("*.md")) if (mem / "topics").is_dir() else []
@@ -80,7 +103,8 @@ def main():
     for line in out:
         print("FIX", line)
     print(f"{len(notes)} notes, {len(topics)} topic pages, MEMORY.md {len(itext.splitlines())} lines, "
-          f"NOW.md {len(now.read_text().splitlines()) if now.exists() else 0} lines, {len(out)} to fix")
+          f"NOW.md {len(now.read_text().splitlines()) if now.exists() else 0} lines, "
+          f"LATER.md {len(later.read_text().splitlines()) if later.exists() else 0} lines, {len(out)} to fix")
     return 1 if out else 0
 
 

@@ -127,8 +127,26 @@ again with this version by the same Haiku writer:
 
 Answer quality did not change, which is the point: the fix is about what every session has to read at its start. The
 scores in this table are lower than in the main table because the two versions were graded in a pool of their own,
-and the grader is stricter when it sees fewer answers side by side; only the difference is meaningful. `LATER.md` has
-no cap yet and reached 109 lines.
+and the grader is stricter when it sees fewer answers side by side; only the difference is meaningful.
+
+`LATER.md` had no cap in that version and grew by about two lines per session to 109 lines. It now has a cap of 40
+lines, grouped under subject headings, with one line per subject and owner; lines that are done or overtaken are
+deleted, and the user's open items are never dropped silently: when they are over the limit or older than 30 days the
+agent asks the user which to keep. A third rebuild of the same 48 sessions with this rule:
+
+| | no cap | 40-line cap |
+|---|---|---|
+| `LATER.md` at the end | 109 lines, 22 KB | 40 lines, 7 KB (never above 40 in 48 sessions) |
+| open items for the user / for the agent | 54 / 54 | 24 / 2 |
+| `NOW.md` | at most 26 lines | at most 30 lines |
+| problems reported by the check | 0 in 48 sessions | 1, in the last session: user items older than 30 days |
+| writer cost | $0.85 | $0.91 |
+
+The one reported problem is the rule working: the agent could not ask, so it put the question first in `NOW.md`
+("which of the user lines older than 30 days should stay open?"). Limits: the questions were not asked again for this
+version, since `LATER.md` is not read when answering; whether every dropped line was really done or overtaken was not
+checked line by line; and the writer keeps under 40 lines partly by merging related items into long lines (up to
+about 490 characters).
 
 ## Other tests
 

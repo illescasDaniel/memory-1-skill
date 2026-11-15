@@ -11,6 +11,7 @@ Cursor, others). No service and no database: `grep` is the search engine.
 ```
 memory/
   NOW.md                 status: what we are doing, what was just done, what is next, open questions (overwritten)
+  LATER.md               optional: open items that are not next, one line each (not read at session start)
   MEMORY.md              index: one line per note (small memory) or one line per topic page (large memory)
   notes/<slug>.md        one fact per file, dated, with status and supersession links
   topics/<topic>.md      optional wiki page per subject: summary, how it evolved, links to its notes (see Growing)
@@ -55,7 +56,8 @@ steps (they go in `NOW.md`); secrets.
 
 ## NOW.md: what we are doing and what is next
 
-One short file (under about 40 lines) that the next session, in any agent, reads first. Overwrite it; do not append.
+One short file (at most 50 lines) that the next session, in any agent, reads first. Rewrite it from scratch each time
+for the work as it stands now; never append to the previous text or keep an "Earlier:" trail.
 
 ```markdown
 # Now
@@ -75,6 +77,13 @@ Settings screen: moving the in-app help pages to the native WebView.
   not ask. A session that ends without updating `NOW.md` leaves the next agent guessing.
 - `Next` starts with the next step the user named, in their words; your own follow-ups go after it, marked as yours.
 - Name decisions only by linking their note; the reason lives in the note, not here.
+- Keep it small, section by section: `Updated` names one session; `Doing` is the current work only (up to 5 lines);
+  `Done recently` has at most 5 one-line items from the latest sessions (delete older ones: git and the notes keep
+  them); `Next` has at most 7 items; no other sections.
+- Open items that are not among the next steps go to `memory/LATER.md`, one dated line each, marked `(User)` or
+  `(Mine)`: things to test on a real device, questions the user has not answered, follow-ups from older sessions.
+  `LATER.md` is not read at session start. Read it when the user asks what is pending, or when `Next` is empty, and
+  delete lines that are done or no longer matter.
 - When a decision changes, update both: supersede the note and rewrite the affected `Next` items.
 
 ## How to write a note
@@ -138,7 +147,7 @@ One line per note: link, date, and a hook specific enough to decide whether to o
 
 ## Growing: topic pages
 
-When `MEMORY.md` passes about 150 lines, or one subject has about 8 or more notes, group notes by subject into
+When `MEMORY.md` passes 150 lines (the check says so), or one subject has about 8 or more notes, group notes by subject into
 `memory/topics/<topic>.md`, one page per subject (a feature, component or area: `phone-picker`, `releases`). Notes stay
 where they are; a page is a map and a synthesis, not a copy.
 
@@ -159,6 +168,8 @@ Help pages render in a bundled Chromium (CEF) view ([help-view-cef](../notes/hel
 - [Help view: native WebView](../notes/help-view-native-webview.md) 2026-11-12 → superseded by help-view-cef-backend
 ```
 
+- Do the switch in the session where the limit is passed, starting with the subjects that have the most notes; it
+  does not have to cover every note at once.
 - `MEMORY.md` then holds the trust line, one line per topic page (link, note count, what it covers), the newest ~20
   notes, and notes that fit no topic.
 - Keep each page shorter than the notes it covers; it should abstract, not repeat. Every claim links its note.
@@ -186,8 +197,17 @@ Transcripts are personal working history. By default `memory/sessions/` is git-i
 ## End of session
 
 Before finishing a session in which work happened (when the user says thanks, stop, that's all, or the task is done):
-rewrite `NOW.md`, write or supersede the notes, update `MEMORY.md` and any affected topic page, and, if the archive is used, export the session and add its `INDEX.md` line. Keep edits small; do not
-rewrite notes that did not change.
+rewrite `NOW.md`, write or supersede the notes, update `MEMORY.md` and any affected topic page, and, if the archive
+is used, export the session and add its `INDEX.md` line. Keep edits small; do not rewrite notes that did not change.
+
+Then run the check and do what each `FIX` line says (it reports a `NOW.md` or index that grew past its limit, notes
+missing from the index, and broken supersession links):
+
+```bash
+python3 <skill dir>/scripts/memory_check.py --memory memory
+```
+
+Without a shell, count instead: `NOW.md` at most 50 lines, `MEMORY.md` at most 150.
 
 ## Alongside other memory
 

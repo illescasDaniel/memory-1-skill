@@ -105,9 +105,30 @@ Every system saw the same 48 sessions, oldest first.
   others, with the same prompt, model and tools. All 600 answers were graded together in the same blind calls.
 - **Preference is 4 questions.** memory-1 as published scored 1.19 there against the prototype's 1.75; with 4 questions
   that is one or two answers.
-- **What the writer did not do.** In this run the Haiku writer let `NOW.md` grow to 96 lines instead of keeping it
-  under about 40, and it had not yet created topic pages when the index reached 158 lines. The scores above are for
-  that memory as written.
+- **What the writer did not do, and the fix.** In this run the Haiku writer let `NOW.md` grow to 96 lines and had not
+  created topic pages when the index reached 158 lines. The scores above are for that memory as written (skill at
+  commit `cb8a717` of the original history). The current skill fixes both; see the next section.
+
+## After the benchmark: keeping `NOW.md` and the index small
+
+The skill now says to rewrite `NOW.md` from scratch with a cap per section (50 lines in all), moves open items that
+are not next into `LATER.md` (not read at session start), and ships `memory_check.py`, which the agent runs at the end
+of a session and which tells it what to fix, including when to create topic pages. The same 48 sessions were written
+again with this version by the same Haiku writer:
+
+| | benchmarked version | current version |
+|---|---|---|
+| `NOW.md` at the end | 96 lines | 26 lines (never above 26 in 48 sessions) |
+| index at the end | 158 lines, no topic pages | 142 lines, 3 topic pages (created when the index neared 150) |
+| `LATER.md` | n/a | 109 lines |
+| problems reported by the check after a session | n/a | 0 in 48 sessions |
+| writer cost | $0.71 | $0.85 |
+| score, graded together (30 questions) | 1.37 | 1.42 (difference +0.05 ± 0.10) |
+
+Answer quality did not change, which is the point: the fix is about what every session has to read at its start. The
+scores in this table are lower than in the main table because the two versions were graded in a pool of their own,
+and the grader is stricter when it sees fewer answers side by side; only the difference is meaningful. `LATER.md` has
+no cap yet and reached 109 lines.
 
 ## Other tests
 

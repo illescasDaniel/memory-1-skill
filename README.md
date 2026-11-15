@@ -18,7 +18,8 @@ templates and one export script), so it works in Claude Code, Codex, Cursor and 
 
 ```
 memory/
-  NOW.md                 status: doing, done recently, next (user's next step first), open questions; overwritten
+  NOW.md                 status: doing, done recently, next (user's next step first), open questions; rewritten, max 50 lines
+  LATER.md               open items that are not next, one line each; not read at session start
   MEMORY.md              index: trust rules, one line per note (or per topic page once large), History last
   notes/<slug>.md        one fact per file: type, date, status, supersedes/superseded_by, source session
   topics/<topic>.md      past ~150 index lines: one wiki page per subject (summary, how it evolved, its notes)
@@ -92,6 +93,13 @@ Export sessions by hand (Python 3.9+, standard library only):
 
 ```bash
 python3 path/to/skills/memory-1/scripts/export_sessions.py --project . --out memory/sessions
+```
+
+Check the memory folder (sizes, notes missing from the index, broken supersession links); the skill runs it at the end
+of a session:
+
+```bash
+python3 path/to/skills/memory-1/scripts/memory_check.py --memory memory
 ```
 
 ## Using it with memory-bank

@@ -153,6 +153,16 @@ rebuild with that rule: `LATER.md` ended at 40 lines and 5 KB, the longest line 
 user's), `NOW.md` at most 32 lines, and the check reported a problem after 1 of 48 sessions (42 lines, fixed in the
 next session). Writer cost $0.88.
 
+The 40-line cap had one side effect: every follow-up the agent had noted for itself was pruned, and only the user's
+items were left. Follow-ups now have their own `## Suggestions` section, at most 8: one is added only when skipping it
+has a cost that can be named, it is raised with the user when its moment comes, and it is deleted after 30 days unless
+accepted. A fifth rebuild with that rule kept 4 suggestions at the end (a failing dependency audit before the next
+release, a server bound to all interfaces, an unencrypted passcode on untrusted Wi-Fi, a tool that may be missing from
+the packaged app) next to 28 user items. `LATER.md` stayed at 40 lines or fewer for 43 sessions and then went to 45
+lines over the last 5: the remaining lines were all the user's, which the agent may not drop on its own, so it asked
+in `NOW.md` which ones were done. Nobody answers in a replay, so in unattended use the file can sit a few lines over
+the limit until the user replies. `NOW.md` reached at most 38 lines (limit 50). Writer cost $0.91.
+
 ## Other tests
 
 **Across agents.** Three chained sessions alternating Claude Code (Haiku) and Codex on a small test repository: a

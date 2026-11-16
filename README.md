@@ -11,7 +11,7 @@ templates and one export script), so it works in Claude Code, Codex, Cursor and 
   moves to a History section, so "what did we decide before, and what now?" both have answers.
 - **Clear trust rules.** Code at HEAD wins for current behaviour; notes win for why, history and preferences; the
   newest current note wins between notes.
-- **Portable transcripts.** `scripts/export_sessions.py` turns Claude Code and Codex sessions into small, redacted
+- **Portable transcripts.** `scripts/export_sessions.py` turns Claude Code, Codex and opencode sessions into small, redacted
   Markdown digests, so the archive works the same whichever agent you used.
 
 ## The files

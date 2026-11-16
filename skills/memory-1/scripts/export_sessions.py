@@ -140,7 +140,9 @@ def find_sessions(project, claude_dirs):
                           if cdir.name == enc or inside(claude_cwd(p), project)]
     if CODEX_ROOT.is_dir():
         for path in sorted(CODEX_ROOT.rglob("*.jsonl")):
-            if inside(codex_meta(path).get("cwd"), project):
+            meta = codex_meta(path)
+            # Codex stores each subagent and automatic review as its own rollout; only the user's own sessions count.
+            if inside(meta.get("cwd"), project) and not (isinstance(meta.get("source"), dict) and "subagent" in meta["source"]):
                 found.append(("codex", path, read_codex))
     return found
 

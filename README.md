@@ -19,7 +19,7 @@ templates and one export script), so it works in Claude Code, Codex, Cursor and 
 ```
 memory/
   NOW.md                 status: doing, done recently, next (user's next step first), open questions; rewritten, max 50 lines
-  LATER.md               open items that are not next, one line each; not read at session start
+  LATER.md               open items for the user and a few follow-up suggestions; not read at session start
   MEMORY.md              index: trust rules, one line per note (or per topic page once large), History last
   notes/<slug>.md        one fact per file: type, date, status, supersedes/superseded_by, source session
   topics/<topic>.md      past ~150 index lines: one wiki page per subject (summary, how it evolved, its notes)
@@ -101,6 +101,12 @@ of a session:
 ```bash
 python3 path/to/skills/memory-1/scripts/memory_check.py --memory memory
 ```
+
+> [!NOTE]
+> Recommended with Claude Code: turn off its built-in auto memory for the project, so there is one memory and it is the
+> one in the repository that every agent and teammate can read. Add `"autoMemoryEnabled": false` to
+> `.claude/settings.json`. It is a recommendation, not a requirement: the two can coexist, but facts then end up in two
+> places and only one of them is shared.
 
 ## Using it with memory-bank
 

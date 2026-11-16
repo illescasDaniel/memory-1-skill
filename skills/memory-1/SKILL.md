@@ -92,23 +92,37 @@ is empty, and grep it for the subject before starting work on that subject.
 ## Releases
 - 2026-11-12 (User) Decide whether Linux arm64 gets a build.
 ## Help pages
-- 2026-11-15 (Mine) Test on a real device: FAQ grid on Ubuntu 20.04, search box on Android 9, dark mode.
+- 2026-11-15 (User) Test on a real device: FAQ grid on Ubuntu 20.04, search box on Android 9, dark mode.
+## Suggestions
+- 2026-11-15 Fix the dependency audit before the next release: it fails on two advisories and the last two releases skipped it ([note](notes/release-audit-skipped.md)).
 ```
 
-- **What goes in:** something a person would actually act on later: a decision the user still owes, a test only the
-  user can run, a real follow-up. A caveat about finished work ("not tried on a real phone") belongs in that work's
-  note, not here. Do not add "check that X finished" items for routine steps.
-- **One line per thing to do or decide, at most 240 characters.** Group lines under subject headings. Each line has a
-  date and `(User)` or `(Mine)`. Say what to do and link the note; the detail (versions, file names, what was tried)
-  stays in the note. Before adding, look for a line asking for the same action and extend it (as the device-test line
-  above does), keeping its oldest date. Do not join separate actions into one line to save lines: a line that needs
-  "and" or ";" between two different actions is two items, and one of them may have to go.
+It has two kinds of line. Under subject headings: **what the user owes** (`(User)`: a decision, a test only they can
+run, something they asked to do later). Under `## Suggestions`, always the last section: **your own follow-ups**, at
+most 8.
+
+- **What goes in:** something a person would actually act on later. A caveat about finished work ("not tried on a real
+  phone") belongs in that work's note, not here. Do not add "check that X finished" items for routine steps.
+- **One line per thing to do or decide, at most 240 characters.** Each line starts with a date. Say what to do and link
+  the note; the detail (versions, file names, what was tried) stays in the note. Before adding, look for a line asking
+  for the same action and extend it (as the device-test line above does), keeping its oldest date. Do not join separate
+  actions into one line to save lines: a line that needs "and" or ";" between two different actions is two items.
 - **Delete, do not keep:** lines that are done, and lines overtaken by events (a check on release 1.2 once 1.4 is out;
   a question about code that was since rewritten). Git keeps the history.
-- **When it passes 40 lines, prune in this order:** delete done and overtaken lines; merge lines that ask
-  for the same action; delete the oldest `(Mine)` lines. Never silently delete a `(User)` line that is still open: if `(User)` lines alone
-  exceed the limit, or some are older than 30 days, list them to the user at the next natural pause and ask which to
-  keep, then delete the rest. If the user is not there, put that question first in `NOW.md` under Open questions.
+- **A suggestion must matter.** Add one only when skipping it has a cost you can name: a bug or failing check left in
+  place, a risk to data or security, something that will block or break a coming release. Say what to do and when
+  ("before the next release", "when touching the importer"), and why if the line does not make it obvious. No
+  nice-to-haves, no "could also", nothing the user already declined.
+- **Suggestions are raised, then settled.** When the work reaches a suggestion's moment (its subject is being changed,
+  the release is being prepared) or the user asks what is pending, tell the user about it. If they accept, it moves to
+  `NOW.md` Next or becomes a `(User)` line; if they decline, delete it and, when the reason is a preference, save a
+  note. A suggestion older than 30 days that was never raised is raised once at the next natural pause, then deleted
+  unless accepted. When there are more than 8, delete the ones with the lowest cost first.
+- **When the file passes 40 lines, prune in this order:** delete done and overtaken lines; merge lines that ask for the
+  same action; delete suggestions down to the 3 that matter most. Never silently delete a `(User)` line that is still
+  open: if `(User)` lines alone exceed the limit, or some are older than 30 days, list them to the user at the next
+  natural pause and ask which to keep, then delete the rest. If the user is not there, put that question first in
+  `NOW.md` under Open questions.
 
 ## How to write a note
 
@@ -231,7 +245,7 @@ missing from the index, and broken supersession links):
 python3 <skill dir>/scripts/memory_check.py --memory memory
 ```
 
-Without a shell, count instead: `NOW.md` at most 50 lines, `LATER.md` at most 40 (each at most 240 characters), `MEMORY.md` at most 150.
+Without a shell, count instead: `NOW.md` at most 50 lines, `LATER.md` at most 40 (each at most 240 characters, at most 8 suggestions), `MEMORY.md` at most 150.
 
 ## Alongside other memory
 

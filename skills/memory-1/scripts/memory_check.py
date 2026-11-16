@@ -10,7 +10,7 @@ import re
 import sys
 from pathlib import Path
 
-NOW_MAX, NEXT_MAX, DONE_MAX, INDEX_MAX, LATER_MAX, LATER_DAYS, LATER_LINE = 50, 7, 5, 150, 40, 30, 240
+NOW_MAX, NEXT_MAX, DONE_MAX, INDEX_MAX, LATER_MAX, LATER_DAYS, LATER_LINE, SUGGEST_MAX = 50, 7, 5, 150, 40, 30, 240, 8
 
 
 def meta(path):
@@ -52,11 +52,19 @@ def main():
         ltext = later.read_text(encoding="utf-8", errors="replace")
         rows = [l for l in ltext.splitlines() if re.match(r"\s*[-*]\s", l)]
         n = len(ltext.splitlines())
+        sug = re.split(r"(?mi)^## Suggestions\s*$", ltext, maxsplit=1)
+        srows = [l for l in (sug[1].split("\n## ")[0] if len(sug) > 1 else "").splitlines() if re.match(r"\s*[-*]\s", l)]
         if n > LATER_MAX:
-            mine = sum("(Mine)" in l for l in rows)
-            out.append(f"LATER.md has {n} lines (limit {LATER_MAX}; {mine} Mine, {len(rows) - mine} other): delete done "
-                       f"and overtaken lines, merge lines that ask for the same action, then delete the oldest (Mine) lines; "
-                       f"ask the user about (User) lines you cannot settle")
+            out.append(f"LATER.md has {n} lines (limit {LATER_MAX}; {len(srows)} suggestions, {len(rows) - len(srows)} other): "
+                       f"delete done and overtaken lines, merge lines that ask for the same action, then delete "
+                       f"suggestions down to the 3 that matter most; ask the user about (User) lines you cannot settle")
+        if len(srows) > SUGGEST_MAX:
+            out.append(f"LATER.md has {len(srows)} suggestions (limit {SUGGEST_MAX}): delete the ones whose cost of "
+                       f"skipping is lowest")
+        stray = [l for l in rows if "(Mine)" in l and l not in srows]
+        if stray:
+            out.append(f"LATER.md has {len(stray)} (Mine) line(s) outside '## Suggestions': move the ones that matter "
+                       f"into that section (last in the file) and delete the rest")
         long = [l for l in rows if len(l) > LATER_LINE]
         if long:
             out.append(f"LATER.md has {len(long)} line(s) over {LATER_LINE} characters: say what to do and link the note, "
@@ -69,6 +77,12 @@ def main():
             d = re.search(r"\d{4}-\d{2}-\d{2}", l)
             if d and "(User)" in l and (today - datetime.date.fromisoformat(d.group(0))).days > LATER_DAYS:
                 old.append(l)
+        olds = [l for l in srows if (d := re.search(r"\d{4}-\d{2}-\d{2}", l))
+                and (today - datetime.date.fromisoformat(d.group(0))).days > LATER_DAYS]
+        if olds:
+            out.append(f"LATER.md has {len(olds)} suggestion(s) older than {LATER_DAYS} days: raise each with the user "
+                       f"once (or under Open questions in NOW.md if they are not there), then delete it unless accepted "
+                       f"(first: {olds[0].strip()[:80]})")
         if old:
             out.append(f"LATER.md has {len(old)} (User) line(s) older than {LATER_DAYS} days: list them to the user and "
                        f"ask which to keep (first: {old[0].strip()[:80]})")

@@ -98,13 +98,15 @@ is empty, and grep it for the subject before starting work on that subject.
 - **What goes in:** something a person would actually act on later: a decision the user still owes, a test only the
   user can run, a real follow-up. A caveat about finished work ("not tried on a real phone") belongs in that work's
   note, not here. Do not add "check that X finished" items for routine steps.
-- **One line per subject and owner.** Group lines under subject headings. Before adding, look for a line on the same
-  subject and extend it (as the device-test line above does) instead of adding another. Each line has a date and
-  `(User)` or `(Mine)`; when you extend a line, keep its oldest date.
+- **One line per thing to do or decide, at most 240 characters.** Group lines under subject headings. Each line has a
+  date and `(User)` or `(Mine)`. Say what to do and link the note; the detail (versions, file names, what was tried)
+  stays in the note. Before adding, look for a line asking for the same action and extend it (as the device-test line
+  above does), keeping its oldest date. Do not join separate actions into one line to save lines: a line that needs
+  "and" or ";" between two different actions is two items, and one of them may have to go.
 - **Delete, do not keep:** lines that are done, and lines overtaken by events (a check on release 1.2 once 1.4 is out;
   a question about code that was since rewritten). Git keeps the history.
-- **When it passes 40 lines, prune in this order:** delete done and overtaken lines; merge lines on the same subject;
-  delete the oldest `(Mine)` lines. Never silently delete a `(User)` line that is still open: if `(User)` lines alone
+- **When it passes 40 lines, prune in this order:** delete done and overtaken lines; merge lines that ask
+  for the same action; delete the oldest `(Mine)` lines. Never silently delete a `(User)` line that is still open: if `(User)` lines alone
   exceed the limit, or some are older than 30 days, list them to the user at the next natural pause and ask which to
   keep, then delete the rest. If the user is not there, put that question first in `NOW.md` under Open questions.
 
@@ -229,7 +231,7 @@ missing from the index, and broken supersession links):
 python3 <skill dir>/scripts/memory_check.py --memory memory
 ```
 
-Without a shell, count instead: `NOW.md` at most 50 lines, `LATER.md` at most 40, `MEMORY.md` at most 150.
+Without a shell, count instead: `NOW.md` at most 50 lines, `LATER.md` at most 40 (each at most 240 characters), `MEMORY.md` at most 150.
 
 ## Alongside other memory
 

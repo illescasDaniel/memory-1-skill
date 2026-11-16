@@ -145,8 +145,13 @@ agent asks the user which to keep. A third rebuild of the same 48 sessions with 
 The one reported problem is the rule working: the agent could not ask, so it put the question first in `NOW.md`
 ("which of the user lines older than 30 days should stay open?"). Limits: the questions were not asked again for this
 version, since `LATER.md` is not read when answering; whether every dropped line was really done or overtaken was not
-checked line by line; and the writer keeps under 40 lines partly by merging related items into long lines (up to
-about 490 characters).
+checked line by line.
+
+In that run the writer stayed under 40 lines partly by joining separate items into long lines (up to about 490
+characters). Each line is now limited to 240 characters, says what to do and links the note for the detail. A fourth
+rebuild with that rule: `LATER.md` ended at 40 lines and 5 KB, the longest line 238 characters, 27 open items (all the
+user's), `NOW.md` at most 32 lines, and the check reported a problem after 1 of 48 sessions (42 lines, fixed in the
+next session). Writer cost $0.88.
 
 ## Other tests
 

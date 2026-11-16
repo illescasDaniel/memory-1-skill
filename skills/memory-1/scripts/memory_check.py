@@ -10,7 +10,7 @@ import re
 import sys
 from pathlib import Path
 
-NOW_MAX, NEXT_MAX, DONE_MAX, INDEX_MAX, LATER_MAX, LATER_DAYS = 50, 7, 5, 150, 40, 30
+NOW_MAX, NEXT_MAX, DONE_MAX, INDEX_MAX, LATER_MAX, LATER_DAYS, LATER_LINE = 50, 7, 5, 150, 40, 30, 240
 
 
 def meta(path):
@@ -55,8 +55,13 @@ def main():
         if n > LATER_MAX:
             mine = sum("(Mine)" in l for l in rows)
             out.append(f"LATER.md has {n} lines (limit {LATER_MAX}; {mine} Mine, {len(rows) - mine} other): delete done "
-                       f"and overtaken lines, merge lines on the same subject, then delete the oldest (Mine) lines; "
+                       f"and overtaken lines, merge lines that ask for the same action, then delete the oldest (Mine) lines; "
                        f"ask the user about (User) lines you cannot settle")
+        long = [l for l in rows if len(l) > LATER_LINE]
+        if long:
+            out.append(f"LATER.md has {len(long)} line(s) over {LATER_LINE} characters: say what to do and link the note, "
+                       f"move the detail into the note, and split lines that join separate actions "
+                       f"(first: {long[0].strip()[:80]})")
         ref = re.search(r"Updated:\s*(\d{4}-\d{2}-\d{2})", now.read_text(encoding="utf-8", errors="replace")) if now.exists() else None
         today = datetime.date.fromisoformat(ref.group(1)) if ref else datetime.date.today()
         old = []
@@ -68,7 +73,7 @@ def main():
             out.append(f"LATER.md has {len(old)} (User) line(s) older than {LATER_DAYS} days: list them to the user and "
                        f"ask which to keep (first: {old[0].strip()[:80]})")
         if rows and not re.search(r"(?m)^## ", ltext) and len(rows) > 10:
-            out.append("LATER.md has no subject headings: group its lines under '## <subject>' and merge lines on the same subject")
+            out.append("LATER.md has no subject headings: group its lines under '## <subject>' and merge lines that ask for the same action")
     index = mem / "MEMORY.md"
     itext = index.read_text(encoding="utf-8", errors="replace") if index.exists() else ""
     topics = sorted((mem / "topics").glob("*.md")) if (mem / "topics").is_dir() else []

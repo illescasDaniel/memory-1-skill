@@ -6,14 +6,13 @@ At skill revision `a141c5a` (identical skill files at the current repository HEA
 
 Tier 3 was attempted previously: the docs-1 starter ran against an empty workspace and is not a meaningful evaluation; the full docs-1 run hit exhausted API credit, and the memory-1 run stopped before attempts. Neither produced a valid result. The earlier LLM rubric and review used OpenAI models and were not rerun in this keyless recheck.
 
-Checked on 2026-11-17 with [NVIDIA SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator) 0.9.0 (security scan by
-SkillSpector 2.13.3, run directly because SkillEvaluator's own launch of it did not complete on this setup).
+The original checks on 2026-11-17 used [NVIDIA SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator) 0.9.0. Its initial SkillSpector launch failed on the local Python setup; a standalone scan was used. The independent recheck above used a Python 3.13 SkillSpector 2.13.3 installation and completed the embedded scan.
 
 | Check | Result |
 | --- | --- |
 | Quality score | A, 93.5/100 (correctness 85, discoverability 95, reliability 100, efficiency 100); was B, 86.0 before the Purpose, Examples, Limitations and Troubleshooting sections |
 | LLM rubric score (previous revision) | 85.5/100 |
-| Tier 1 (schema, version, license, code risk, lint, unicode) | 11 of 12 checks passed, none failed; the 12th (security scan) is the SkillSpector run below |
+| Tier 1 (schema, version, license, code risk, lint, unicode) | Independent recheck: 11 applicable checks passed, none failed; one dependency audit not applicable. The embedded security scan passed using the Python 3.13 workaround. |
 | Tier 2 (duplicate context, previous revision) | passed, no duplicated content found |
 | PII and secrets scans | passed |
 | SkillSpector (with LLM review, previous revision) | risk score 37, MEDIUM, recommendation CAUTION; 3 findings confirmed (no declared permissions, broad trigger description, cross-session state), 1 disagreed (subprocess call) |

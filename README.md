@@ -18,7 +18,7 @@ Portable project memory for AI coding agents, stored as Markdown in your reposit
 
 ## How it works
 
-![memory-1 workflow: read project memory, capture decisions, and update notes](assets/infographic.png)
+<img alt="memory-1 workflow: read project memory, capture decisions, and update notes" src="assets/infographic.png" height="350">
 
 At session start the agent reads the status and index. As work progresses it records decisions and preferences, then updates the status before finishing.
 
@@ -121,7 +121,9 @@ database is skipped with a note.
 
 ## Evaluation
 
-The keyless [NVIDIA SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator) quality check gave **A, 93.5/100** on the revision checked on 2026-11-17. SkillSpector reported **medium risk / caution**; its findings and review are in the evaluation details. Some checks apply to the preceding revision, and the paid Tier 3 live-agent evaluation was not run.
+[![NVIDIA SkillEvaluator quality A, 93.5 out of 100; keyless security scan medium risk](assets/evaluation.svg)](docs/evaluation.md)
+
+The keyless [NVIDIA SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator) quality check gave **A, 93.5/100** on the revision checked on 2026-11-17. The latest keyless SkillSpector scan reported **medium risk / caution**; its findings and limits are in the evaluation details. Some checks apply to the preceding revision. Tier 3 was attempted, but produced no valid live-agent result.
 
 In a separate project benchmark, memory-1 scored **1.59/2**, close to searching raw session transcripts (**1.58/2**). This was one project and 30 questions, with the skill shaped on that project; it is not a general ranking. [Evaluation details](docs/evaluation.md) · [Benchmark method and results](docs/benchmark.md)
 

@@ -150,6 +150,32 @@ wiki tests are in [docs/benchmark.md](docs/benchmark.md).
 Issues and pull requests are welcome. The skill is deliberately short: if a change makes `SKILL.md` longer, it should
 earn it.
 
+## Evaluation
+
+Checked on 2026-11-17 with [NVIDIA SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator) 0.9.0 (security scan by
+SkillSpector 2.13.3, run directly because SkillEvaluator's own launch of it did not complete on this setup).
+
+| Check | Result |
+| --- | --- |
+| Quality score | B, 86.0/100 (correctness 85, discoverability 75, reliability 90, efficiency 100) |
+| LLM rubric score | 85.5/100 |
+| Tier 1 (schema, version, license, code risk, lint, unicode) | 11 of 12 checks passed, none failed; the 12th (security scan) is the SkillSpector run below |
+| Tier 2 (duplicate context) | passed, no duplicated content found |
+| PII and secrets scans | passed |
+| SkillSpector (with LLM review) | risk score 37, MEDIUM, recommendation CAUTION; 3 findings confirmed (no declared permissions, broad trigger description, cross-session state), 1 disagreed (subprocess call) |
+
+The confirmed SkillSpector findings are accepted: a memory skill persists notes across sessions by design, it reads and writes files in the project and, only when the user asks for it, reads local transcript stores and runs a local script. The `subprocess` finding was reviewed and rejected (it runs only fixed, read-only `git` commands with no shell).
+
+Not run: Tier 3, the live agent evaluation (it needs Docker). The remaining quality notes are generic ones that do not
+fit this skill: no `## Purpose`/`## Troubleshooting` headings, a long description that carries the trigger conditions, and a
+`version` field that is set under `metadata:` rather than at the top level.
+
+Reproduce:
+
+```bash
+uvx --python 3.13 --from 'skillevaluator[all]' skillevaluator quality-check ./skills/memory-1
+```
+
 ## License
 
 MIT, see [LICENSE](LICENSE).

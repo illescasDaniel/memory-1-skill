@@ -112,11 +112,19 @@ python3 path/to/skills/memory-1/scripts/memory_check.py --memory memory
 > `.claude/settings.json`. It is a recommendation, not a requirement: the two can coexist, but facts then end up in two
 > places and only one of them is shared.
 
-## Using it with memory-bank
+## Setting up next to an existing memory
 
-You do not need both. If [memory-bank](https://github.com/illescasDaniel/memory-bank) is installed, its
-`activeContext.md` and `progress.md` take the place of `NOW.md`; memory-1 keeps the dated facts and their history.
-Never put "next step is X" in a note, and do not copy decision notes into `activeContext.md`.
+When you ask for memory to be set up, the skill looks for an existing project memory (another `memory/` layout, a
+`memory-bank/` or `.agemem/` folder, status files, memory sections in `AGENTS.md` or `CLAUDE.md`) and proposes a
+migration: status to `NOW.md`, open items to `LATER.md`, each fact or decision to a dated note. The old files stay until
+you confirm they can go.
+
+## Requirements and limits
+
+Python 3.9+, standard library only. Transcript export is opt-in. It reads the local transcript stores of Claude Code,
+Codex and opencode read-only, keeps only sessions from this project or its git worktrees, and writes to the git-ignored
+`memory/sessions/`. Redaction is pattern-based: skim an export before sharing it. A missing source or a locked opencode
+database is skipped with a note.
 
 ## Benchmark
 

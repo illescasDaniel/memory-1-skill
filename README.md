@@ -18,6 +18,8 @@ Portable project memory for AI coding agents, stored as Markdown in your reposit
 
 ## How it works
 
+![memory-1 workflow: read project memory, capture decisions, and update notes](assets/infographic.png)
+
 At session start the agent reads the status and index. As work progresses it records decisions and preferences, then updates the status before finishing.
 
 | In `memory/` | Purpose |

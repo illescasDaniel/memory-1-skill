@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="memory-1 icon">
+  <rect width="128" height="128" rx="26" fill="#1f2937"/>
+  <rect x="30" y="26" width="56" height="76" rx="6" fill="#f9fafb"/>
+  <rect x="38" y="38" width="40" height="5" rx="2.5" fill="#6b7280"/>
+  <rect x="38" y="50" width="32" height="5" rx="2.5" fill="#9ca3af"/>
+  <rect x="38" y="62" width="36" height="5" rx="2.5" fill="#9ca3af"/>
+  <rect x="38" y="74" width="24" height="5" rx="2.5" fill="#9ca3af"/>
+  <circle cx="90" cy="88" r="20" fill="#10b981"/>
+  <path d="M80 88l7 7 13-14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

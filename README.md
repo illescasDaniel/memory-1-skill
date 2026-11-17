@@ -1,34 +1,36 @@
+<p align="center"><img src="assets/icon.svg" alt="memory-1 icon" width="96" height="96"></p>
+
 # memory-1
 
-Long-term project memory for AI coding agents, as plain Markdown in your repo: a short status file (what we are doing,
-what is next), one dated fact per file (decisions and why, reversals, preferences, incidents, gotchas), an index the
-agent reads at session start, topic pages once memory grows, and an optional archive of condensed past sessions for the
-detail notes leave out. It is an [Agent Skill](https://agentskills.io) (a `SKILL.md`,
-templates and one export script), so it works in Claude Code, Codex, Cursor and any agent that can read files.
+<p align="center">
+  <a href="https://github.com/illescasDaniel/memory-1-skill/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/illescasDaniel/memory-1-skill/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <img alt="Python 3.9+" src="https://img.shields.io/badge/python-3.9%2B-3776AB.svg">
+  <img alt="Standard library only" src="https://img.shields.io/badge/dependencies-none-brightgreen.svg">
+  <a href="https://agentskills.io"><img alt="Agent Skill" src="https://img.shields.io/badge/Agent%20Skill-SKILL.md-8A2BE2.svg"></a>
+</p>
 
-- **Plain Markdown, no service.** `grep` is the search engine. Notes are reviewable in PRs and follow the branch.
-- **History is kept, not overwritten.** A changed decision gets a new note that `supersedes` the old one; the old note
-  moves to a History section, so "what did we decide before, and what now?" both have answers.
-- **Clear trust rules.** Code at HEAD wins for current behaviour; notes win for why, history and preferences; the
-  newest current note wins between notes.
-- **Portable transcripts.** `scripts/export_sessions.py` turns Claude Code, Codex and opencode sessions into small, redacted
-  Markdown digests, so the archive works the same whichever agent you used.
+Portable project memory for AI coding agents, stored as Markdown in your repository. Keep current status, decisions, preferences and their history in a form both people and agents can read. Optional session digests preserve additional detail.
 
-## The files
+- **Shared and reviewable:** files travel with the repository; no service required.
+- **History with context:** new notes supersede old decisions instead of erasing them.
+- **Clear trust rules:** code wins for current behavior; notes preserve the reasons and history.
 
-```
-memory/
-  NOW.md                 status: doing, done recently, next (user's next step first), open questions; rewritten, max 50 lines
-  LATER.md               open items for the user and a few follow-up suggestions; not read at session start
-  MEMORY.md              index: trust rules, one line per note (or per topic page once large), History last
-  notes/<slug>.md        one fact per file: type, date, status, supersedes/superseded_by, source session
-  topics/<topic>.md      past ~150 index lines: one wiki page per subject (summary, how it evolved, its notes)
-  sessions/              optional: exported session digests, local only (git-ignored via memory/.gitignore, never committed)
-  sessions/INDEX.md      one line per session: date, file, what it was about (local too)
-  .gitignore             `/sessions`
-```
+## How it works
 
-A note:
+At session start the agent reads the status and index. As work progresses it records decisions and preferences, then updates the status before finishing.
+
+| In `memory/` | Purpose |
+| --- | --- |
+| 📍 `NOW.md` | Current work, recent progress and next steps |
+| 🗂️ `MEMORY.md` | Index of current notes and history |
+| 📝 `notes/` | One dated fact or decision per file |
+| 🧭 `topics/` | Optional topic pages for larger memories |
+| 📌 `LATER.md` | Open items and follow-up suggestions |
+| 🗄️ `sessions/` | Optional, local-only session digests; git-ignored |
+
+<details>
+<summary>See an example memory note</summary>
 
 ```markdown
 ---
@@ -49,18 +51,18 @@ The secret scanner sends each candidate line to the local model in its own reque
 **How to apply:** do not batch candidate lines when changing the scanner.
 ```
 
-## Install
+</details>
 
-### Any agent: the `skills` CLI
+## Quick start
 
 ```bash
 npx skills add illescasDaniel/memory-1-skill
 ```
 
-It asks which agents to install for and whether to install into the current project or globally. Non-interactive:
-`npx skills add illescasDaniel/memory-1-skill -a claude-code -a codex -y`, plus `-g` for global.
+Ask your agent **“set up memory-1”**. Add “with the session archive” if you want to export past sessions. Existing project memory is identified and a migration proposed; the old files stay until you confirm removal.
 
-### By hand
+<details>
+<summary>Manual installation and agent instructions</summary>
 
 Copy the `skills/memory-1` folder into your agent's skills directory.
 
@@ -70,12 +72,6 @@ Copy the `skills/memory-1` folder into your agent's skills directory.
 | Codex | `.agents/skills/memory-1/` | `~/.agents/skills/memory-1/` |
 | Cursor | `.cursor/skills/memory-1/` | `~/.cursor/skills/memory-1/` |
 | Others | add the `AGENTS.md` paragraph below | |
-
-## Use it
-
-Ask your agent: *"set up memory-1"* (add *"with the session archive"* to export past sessions too). After that the skill's
-description tells the agent when to read and write notes: session start, a decision or reversal, a preference or
-correction, a resolved incident, end of session.
 
 For agents that do not load skills, or to make the session-start read guaranteed, add this to `AGENTS.md` (or
 `CLAUDE.md`):
@@ -112,12 +108,7 @@ python3 path/to/skills/memory-1/scripts/memory_check.py --memory memory
 > `.claude/settings.json`. It is a recommendation, not a requirement: the two can coexist, but facts then end up in two
 > places and only one of them is shared.
 
-## Setting up next to an existing memory
-
-When you ask for memory to be set up, the skill looks for an existing project memory (another `memory/` layout, a
-`memory-bank/` or `.agemem/` folder, status files, memory sections in `AGENTS.md` or `CLAUDE.md`) and proposes a
-migration: status to `NOW.md`, open items to `LATER.md`, each fact or decision to a dated note. The old files stay until
-you confirm they can go.
+</details>
 
 ## Requirements and limits
 
@@ -126,62 +117,20 @@ Codex and opencode read-only, keeps only sessions from this project or its git w
 `memory/sessions/`. Redaction is pattern-based: skim an export before sharing it. A missing source or a locked opencode
 database is skipped with a note.
 
-## Benchmark
-
-One real project (48 sessions), 30 questions about past decisions, Claude Haiku answering, blind grading, score 0 to 2:
-
-| system | score |
-|---|---|
-| **memory-1** | **1.59** |
-| raw session transcripts, searched with grep | 1.58 |
-| Claude-style notes folder | 1.39 |
-| memory-bank | 1.13 |
-| agemem | 0.87 |
-| jev-mem | 0.86 |
-| no memory | 0.30 |
-
-memory-1 ties searching the raw transcripts and is clearly above the other memory systems, while reading far less at
-session start than a transcript folder. It is one project, and the skill was shaped on it, so treat this as strong
-evidence of direction, not a general ranking. Method, per-question-type scores, limits and the cross-agent, scale and
-wiki tests are in [docs/benchmark.md](docs/benchmark.md).
-
-## Contributing
-
-Issues and pull requests are welcome. The skill is deliberately short: if a change makes `SKILL.md` longer, it should
-earn it.
-
 ## Evaluation
 
-Checked on 2026-11-17 with [NVIDIA SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator) 0.9.0 (security scan by
-SkillSpector 2.13.3, run directly because SkillEvaluator's own launch of it did not complete on this setup).
+The keyless [NVIDIA SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator) quality check gave **A, 93.5/100** on the revision checked on 2026-11-17. SkillSpector reported **medium risk / caution**; its findings and review are in the evaluation details. Some checks apply to the preceding revision, and the paid Tier 3 live-agent evaluation was not run.
 
-| Check | Result |
-| --- | --- |
-| Quality score | A, 93.5/100 (correctness 85, discoverability 95, reliability 100, efficiency 100); was B, 86.0 before the Purpose, Examples, Limitations and Troubleshooting sections |
-| LLM rubric score (previous revision) | 85.5/100 |
-| Tier 1 (schema, version, license, code risk, lint, unicode) | 11 of 12 checks passed, none failed; the 12th (security scan) is the SkillSpector run below |
-| Tier 2 (duplicate context, previous revision) | passed, no duplicated content found |
-| PII and secrets scans | passed |
-| SkillSpector (with LLM review, previous revision) | risk score 37, MEDIUM, recommendation CAUTION; 3 findings confirmed (no declared permissions, broad trigger description, cross-session state), 1 disagreed (subprocess call) |
+In a separate project benchmark, memory-1 scored **1.59/2**, close to searching raw session transcripts (**1.58/2**). This was one project and 30 questions, with the skill shaped on that project; it is not a general ranking. [Evaluation details](docs/evaluation.md) · [Benchmark method and results](docs/benchmark.md)
 
-The confirmed SkillSpector findings are accepted: a memory skill persists notes across sessions by design, it reads and writes files in the project and, only when the user asks for it, reads local transcript stores and runs a local script. The `subprocess` finding was reviewed and rejected (it runs only fixed, read-only `git` commands with no shell).
-
-The latest revision was re-checked with the keyless checks only (quality score, Tier 1 without the LLM rubric, and
-SkillSpector without its LLM review, which reported the same findings as before); rows marked "previous revision" come
-from the revision before it.
-
-Not run yet: Tier 3, the live agent evaluation (with-skill vs. without-skill runs of a coding agent; it works with
-rootless Podman through the Docker CLI, but needs paid model credit). The remaining quality notes are generic ones that
-do not fit this skill: a long description that carries the trigger conditions, a `version` field that is set under
-`metadata:` rather than at the top level (the Agent Skills spec has no top-level `version`), and `run_script()` examples,
-which belong to another agent harness.
-
-Reproduce:
+## Tests
 
 ```bash
-uvx --python 3.13 --from 'skillevaluator[all]' skillevaluator quality-check ./skills/memory-1
+python3 -m unittest discover -s tests -v
 ```
+
+The free, standard-library tests exercise the scripts using temporary fixtures. They require no API key and live outside the installable skill folder. They do not measure whether an agent follows the skill. See the [CI workflow](.github/workflows/ci.yml) for the test matrix.
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+[MIT](LICENSE) · Issues and pull requests are welcome.

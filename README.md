@@ -23,8 +23,9 @@ memory/
   MEMORY.md              index: trust rules, one line per note (or per topic page once large), History last
   notes/<slug>.md        one fact per file: type, date, status, supersedes/superseded_by, source session
   topics/<topic>.md      past ~150 index lines: one wiki page per subject (summary, how it evolved, its notes)
-  sessions/              optional: exported session digests (git-ignored by default)
-  sessions/INDEX.md      one line per session: date, file, what it was about
+  sessions/              optional: exported session digests, local only (git-ignored via memory/.gitignore, never committed)
+  sessions/INDEX.md      one line per session: date, file, what it was about (local too)
+  .gitignore             `/sessions`
 ```
 
 A note:
@@ -92,8 +93,11 @@ rewrite `memory/NOW.md` (doing, done, next with the user's next step first). Ful
 Export sessions by hand (Python 3.9+, standard library only):
 
 ```bash
-python3 path/to/skills/memory-1/scripts/export_sessions.py --project . --out memory/sessions
+python3 path/to/skills/memory-1/scripts/export_sessions.py --project .
 ```
+
+In a git worktree it collects the sessions of every worktree of the repository into the main checkout's
+`memory/sessions` and links the worktree's `memory/sessions` to it when it can.
 
 Check the memory folder (sizes, notes missing from the index, broken supersession links); the skill runs it at the end
 of a session:
